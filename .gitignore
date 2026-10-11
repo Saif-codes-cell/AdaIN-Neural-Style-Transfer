@@ -1,0 +1,13 @@
+
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.idea/
+.DS_Store
+
+static/uploads/*
+!static/uploads/.gitkeep
+
+experiment/experiment1/optimizer_2.pth
