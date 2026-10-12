@@ -102,7 +102,7 @@ def save_uploaded_file(file_storage):
 
 def style_transfer(content_image, style_image, alpha):
     image_transform = transforms.Compose([
-        transforms.Resize((512, 512)),
+        transforms.Resize((256, 256)),
         transforms.ToTensor(),
     ])
     content_tensor = image_transform(content_image).unsqueeze(0).to(device)
