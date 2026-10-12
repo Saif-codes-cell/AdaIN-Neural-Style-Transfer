@@ -60,14 +60,29 @@ if not VGG_PATH.is_file():
 if not DECODER_PATH.is_file():
     raise FileNotFoundError(f"Decoder checkpoint not found: {DECODER_PATH}")
 
-encoder = VGGEncoder(str(VGG_PATH)).to(device)
-decoder = Decoder().to(device)
-decoder.load_state_dict(torch.load(DECODER_PATH, map_location=device))
-encoder.eval()
-decoder.eval()
 
-for parameter in encoder.parameters():
-    parameter.requires_grad = False
+from functools import lru_cache
+
+@lru_cache(maxsize=1)
+def load_models():
+    encoder_model = VGGEncoder(str(VGG_PATH)).to(device)
+    decoder_model = Decoder().to(device)
+
+    checkpoint = torch.load(
+        DECODER_PATH,
+        map_location=device,
+        weights_only=True
+    )
+    decoder_model.load_state_dict(checkpoint)
+
+    encoder_model.eval()
+    decoder_model.eval()
+
+    for parameter in encoder_model.parameters():
+        parameter.requires_grad = False
+
+    return encoder_model, decoder_model
+
 
 
 def allowed_file(filename):
@@ -100,33 +115,33 @@ def save_uploaded_file(file_storage):
     return candidate
 
 
+
 def style_transfer(content_image, style_image, alpha):
     image_transform = transforms.Compose([
         transforms.Resize((256, 256)),
         transforms.ToTensor(),
     ])
+
     content_tensor = image_transform(content_image).unsqueeze(0).to(device)
     style_tensor = image_transform(style_image).unsqueeze(0).to(device)
 
-    with torch.no_grad():
+    encoder, decoder = load_models()
+
+    with torch.inference_mode():
         content_features = encoder(content_tensor, is_test=True)
         style_features = encoder(style_tensor, is_test=True)
+
         target_features = adaptive_instance_normalization(
             content_features, style_features
         )
         target_features = (
             alpha * target_features + (1.0 - alpha) * content_features
         )
-        generated = decoder(target_features)
 
-    print(
-        "Generated tensor statistics:",
-        f"min={generated.min().item():.4f}",
-        f"max={generated.max().item():.4f}",
-        f"mean={generated.mean().item():.4f}",
-        f"std={generated.std().item():.4f}",
-    )
+        generated = decoder(target_features).cpu()
+
     return generated
+
 
 
 def save_generated_image(image_tensor, destination):
