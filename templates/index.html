@@ -552,8 +552,8 @@
                             {% if content_image %}
                                 
 <img
-    src="{{ url_for('send_example', filename='stylized_brad_pitt.png') }}"
-    alt="Brad Pitt sketch style transfer"
+    src="{{ url_for('send_image', filename=content_image) }}"
+    alt="Uploaded content image"
     class="example-output">
 
                             {% else %}
@@ -574,8 +574,8 @@
                             {% if style_image %}
                                 
 <img
-    src="{{ url_for('send_example', filename='stylized_brad_pitt_3.png') }}"
-    alt="Brad Pitt painting style transfer"
+    src="{{ url_for('send_image', filename=style_image) }}"
+    alt="Uploaded style image"
     class="example-output">
 
                             {% else %}
