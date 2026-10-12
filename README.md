@@ -20,6 +20,10 @@ The application allows users to select a content image, choose a style reference
 <!-- Add a screenshot of your working web application here -->
 ![Application Preview](docs/app-preview.png)
 
+### Generated Stylized Output
+
+![Generated Result](docs/generated_result.jpeg)
+
 ## 🧠 How It Works
 
 The project uses **Adaptive Instance Normalization (AdaIN)** to transfer artistic style statistics from a style image to the features of a content image.
