@@ -162,12 +162,8 @@ def index():
             new_content = save_uploaded_file(form.content.data)
             new_style = save_uploaded_file(form.style.data)
 
-            content_filename = (
-                new_content or secure_filename(form.content_path.data or "")
-            )
-            style_filename = (
-                new_style or secure_filename(form.style_path.data or "")
-            )
+            content_filename = new_content
+            style_filename = new_style
 
             if not content_filename or not (UPLOAD_DIR / content_filename).is_file():
                 raise ValueError("Please upload a valid content image.")
