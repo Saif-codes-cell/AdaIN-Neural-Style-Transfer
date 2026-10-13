@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import torch
+torch.set_num_threads(1)
 from flask import Flask, render_template, send_from_directory
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
@@ -118,7 +119,7 @@ def save_uploaded_file(file_storage):
 
 def style_transfer(content_image, style_image, alpha):
     image_transform = transforms.Compose([
-        transforms.Resize((256, 256)),
+        transforms.Resize((128, 128)),
         transforms.ToTensor(),
     ])
 
